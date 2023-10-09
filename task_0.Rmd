@@ -1,0 +1,54 @@
+```{r}
+simulate_power <- function(n1, n2, delta, sd = 1, sig.level = 0.05, steps = 10^4){
+  test <- function(){
+    x1 <- rnorm(n1, 0, sd)
+    x2 <- rnorm(n2, delta, sd)
+    t <- t.test(x1, x2)
+    prob <- t$p.value
+    prob < sig.level
+  }
+  sum = 0;
+  for (i in 1:steps){
+    sum = sum + test()
+  }
+  sum / steps
+}
+```
+
+```{r}
+print("For the sample size of 10:")
+simulate_power(10, 10, 2, sd = 10)
+power.t.test(delta = 2, sd = 10, n = 10)$power
+print("For the sample size of 20:")
+simulate_power(20, 20, 2, sd = 10)
+power.t.test(delta = 2, sd = 10, n = 20)$power
+print("For the sample size of 100:")
+simulate_power(100, 100, 2, sd = 10)
+power.t.test(delta = 2, sd = 10, n = 100)$power
+```
+
+```{r}
+sampleSizes <- seq(10, 1000, 100)
+single <- c()
+double <- c()
+triple <- c()
+quadruple <- c()
+for(i in sampleSizes) {
+  single <- c(single, simulate_power(i, i, 2, sd = 10, steps=10^3))
+  double <- c(double, simulate_power(2 * i, i, 2, sd = 10, steps=10^3))
+  triple <- c(triple, simulate_power(3 * i, i, 2, sd = 10, steps=10^3))
+  quadruple <- c(quadruple, simulate_power(4 * i, i, 2, sd = 10, steps=10^3))
+}
+plot(sampleSizes, single, type = "l", col = "purple")
+lines(sampleSizes, double, col = "red")
+lines(sampleSizes, triple, col = "green")
+lines(sampleSizes, quadruple, col = "blue")
+```
+
+
+
+
+
+
+
+

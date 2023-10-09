@@ -1,0 +1,45 @@
+```{r}
+
+fill_under_by_color <- function(x, y, col = "red", alpha = 0.25){
+  polygon(c(x, x[length(x)], x[1]), c(y, 0, 0), col = adjustcolor(col, alpha.f = alpha))
+}
+
+new_plot <- function(x, y, type = "l", col = "black"){
+  plot(x, y, type = type, col = col)
+}
+
+add_plot <- function(x, y, col = "black"){
+  lines(x, y, col = col)
+}
+
+add_vertical_line <- function(x, sd){
+  add_plot(c(x, x), c(0, 1 / (sd * sqrt(2 * pi))))
+}
+
+```
+
+```{r}
+normPlot <- function(mean, sd, new = FALSE, col = "white"){
+  x = seq(mean - 3 * sd, mean + 3 * sd, len = 1000)
+  y = dnorm(x, mean, sd)
+  
+  if (new){
+    new_plot(x, y)
+  } else {
+    add_plot(x, y)
+  }
+  fill_under_by_color(x, y, col)
+}
+
+normPlot(100, 15, TRUE, "red")
+normPlot(140, 15, FALSE, "blue")
+add_vertical_line(120, 15)
+```
+
+
+
+
+
+
+
+
