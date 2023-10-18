@@ -1,0 +1,51 @@
+```{r}
+
+iris.simple = iris[-5]
+iris.simple
+
+```
+
+```{r}
+fit = lm(Sepal.Length ~ Sepal.Width, data = iris.simple)
+summary(fit)
+```
+
+```{r}
+y = iris[['Sepal.Length']]
+n = length(y)
+k = 1
+X = matrix(c(rep(1, nrow(iris)), iris[['Sepal.Width']]), ncol = 2)
+beta.est = solve(t(X) %*% X) %*% t(X) %*% y
+print(paste("Our betas: ", beta.est))
+
+y.est = X %*% beta.est
+sigma.est = sqrt(sum((y - y.est)^2) / (n - k - 1))
+sigma.est
+
+cov.matrix.est = (sigma.est^2) * solve(t(X) %*% X)
+sqrt(diag(cov.matrix.est))
+
+t.score = beta.est / sqrt(diag(cov.matrix.est))
+t.score
+```
+
+```{r}
+p.value.1 = pt(-abs(t.score[1]), df = n - k - 1) + (1 - pt(abs(t.score[1]), df = n - k - 1))
+p.value.2 = pt(-abs(t.score[2]), df = n - k - 1) + (1 - pt(abs(t.score[2]), df = n - k - 1))
+print(paste("p-value:", p.value.1, p.value.2))
+```
+
+```{r}
+SSE = sum((y - y.est)^2)
+SSE.0 = sum((y - mean(y))^2)
+(R.squared = 1 - SSE / SSE.0)
+```
+
+```{r}
+F.stat = ((SSE.0 - SSE) / SSE) * (n-k-1) / k
+print(F.stat)
+(p.value.fisher = 1 - pf(F.stat, df2 = n-k-1, df1 = k))
+```
+
+
+
