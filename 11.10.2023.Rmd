@@ -1,0 +1,64 @@
+```{r}
+
+m = 100
+n = 100
+
+xs = rnorm(m)
+ys = rnorm(n, sd = 100)
+
+```
+
+```{r}
+U = 0
+for (x in xs){
+  for (y in ys){
+    U = U + (y < x)
+  }
+}
+U.mean = m * n / 2;
+U.std = sqrt(m * n * (m + n + 1) / 12)
+U.stat = (U - U.mean) / U.std
+U.stat
+
+```
+
+```{r}
+U.pvalue = pnorm(-abs(U.stat)) + (1 - pnorm(abs(U.stat)))
+print(paste("Estimated p-value:", U.pvalue))
+```
+
+```{r}
+fit = wilcox.test(xs, ys, correct = TRUE)
+names(fit)
+print(fit$p.value)
+```
+
+```{r}
+n = 1000
+zs = rnorm(n)
+
+zs.ranks = rank(abs(zs))
+T.plus = sum(zs.ranks[zs > 0])
+T.mean = n * (n + 1) / 4
+T.std = sqrt(n * (n + 1) * (2 * n + 1) / 24)
+T.stat = (T.plus - T.mean) / T.std
+T.pvalue = 1 - pnorm(T.stat)
+
+print(paste("Out statistic: ", T.plus))
+print(paste("Out p-value: ", T.pvalue))
+
+wilcox.test(zs, alternative = "greater")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
